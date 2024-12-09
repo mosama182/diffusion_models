@@ -18,6 +18,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 def score_function(x_t, t, mu_0, sigma2_0, sigma2_q):
     """
@@ -127,29 +128,32 @@ if __name__ == '__main__':
     xbase_test = np.linspace(- 3 * np.sqrt(sigma2_q), 3 * np.sqrt(sigma2_q), 100)
     pxbase = 1/np.sqrt(2 * np.pi * sigma2_q) * np.exp(-(xbase_test)**2/(2 * sigma2_q))
 
-    plt.figure()
+    plt.figure(figsize=(10, 7))
     plt.subplot(1, 3, 1)
-    plt.plot(xbase_test, pxbase, label=r'p(x_{T})')
-    plt.xlabel(r'x')
-    plt.ylabel(r'p(x)')
+    plt.plot(xbase_test, pxbase, label=r'$p(x_{T})$')
+    plt.xlabel(r'$x$')
+    plt.ylabel(r'$p(x)$')
+    plt.title(r'Base distrbution')
     plt.grid()
     plt.legend()
 
     plt.subplot(1, 3, 2)
-    plt.hist(x0_samples_ddpm, density=True, label=r'Samples from DDPM')
-    plt.plot(x0_test, px0, label=r'True p(x_{0})')
-    plt.xlabel(r'x')
-    plt.ylabel(r'p(x)')
+    plt.hist(x0_samples_ddpm, density=True, label=r'Samples')
+    plt.plot(x0_test, px0, label=r'Data dist. $p(x_{0})$')
+    plt.xlabel(r'$x$')
+    plt.ylabel(r'$p(x)$')
+    plt.title(r'DDPM')
     plt.grid()
     plt.legend()
 
     plt.subplot(1, 3, 3)
-    plt.hist(x0_samples_ddim, density=True, label=r'Samples from DDIM')
-    plt.plot(x0_test, px0, label=r'True p(x_{0})')
-    plt.xlabel(r'x')
-    plt.ylabel(r'p(x)')
+    plt.hist(x0_samples_ddim, density=True, label=r'Samples')
+    plt.plot(x0_test, px0, label=r'Data dist. $p_{0}(x_{0})$')
+    plt.xlabel(r'$x$')
+    plt.ylabel(r'$p(x)$')
+    plt.title(r'DDIM')
     plt.grid()
     plt.legend()
 
-    plt.show()
+    plt.savefig(os.path.join('figures', 'experiment-0-samples-ddm-ddim-toy-example.jpg'))
     
