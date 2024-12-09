@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     plt.subplot(1, 3, 2)
     plt.hist(x0_samples_ddpm, density=True, label=r'Samples')
-    plt.plot(x0_test, px0, label=r'Data dist. $p(x_{0})$')
+    plt.plot(x0_test, px0, label=r'Data dist. $p_{0}(x_{0})$')
     plt.xlabel(r'$x$')
     plt.ylabel(r'$p(x)$')
     plt.title(r'DDPM')

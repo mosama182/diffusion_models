@@ -13,6 +13,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import os
 
 def update_ddim(a, xt, t, sigma2_q, delta_t):
     """
@@ -87,6 +88,6 @@ if __name__ == "__main__":
     plt.ylim([-10, 10])
     plt.legend()
     plt.title('Trajectoreis from DDIM with toy data distribution $p_{0}(x_{0})$')
-    plt.savefig(f'experiment-1-sample-trajectories-ddim.jpg')
-    
+    plt.savefig(os.path.join('figures', 'experiment-1-sample-trajectories-ddim.jpg.jpg'))  
+    #plt.show()  
     
