@@ -1,4 +1,4 @@
-# This experiment plots trajecotories of points from x1, x1-\deltat, ..., x0
+# This experiment plots trajecotories of i.e., x1, x1-\deltat, ..., x0
 # when using DDIM sampling.
 # Problem setup:
 # p0(x0) = \delta(x0 - a) (a dirac delta at 'a') where x0 \in R^{2}
@@ -52,7 +52,10 @@ def reverse_sample_ddim(a, sigma2_q, T):
 
 if __name__ == "__main__":
 
+    # data distribution
     a = np.array([2, 3]).reshape(-1, 1)
+
+    # diffusion process parameters
     sigma2_q = 20
     T = 20
 
