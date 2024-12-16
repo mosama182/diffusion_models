@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 
 class Schedule:
     def __init__(self, T) -> None:
@@ -20,34 +21,26 @@ class Schedule:
 
 def generate_training_sample(x0:torch.FloatTensor, sigma2_q, schedule:Schedule):
     """
-    x0 shape: batch_size x 1 x 2
+    x0 shape: batch_size x 2
     sigma2_q : scaler variance of base distribution
     """
     t = schedule.sample_batch(x0) # t shape: (batch_size, )
+
+    eta_t = torch.sqrt(sigma2_q * t).unsqueeze(1) * torch.randn_like(x0)
+    xt = x0 + eta_t # x_{t}
     
-    eta_t = torch.sqrt(sigma2_q * t) * torch.randn_like(x0)
-    xt = x0 + eta_t
     epsilon = np.sqrt(sigma2_q * schedule.delta_t) * torch.rand_like(xt)
-    xt_deltat = xt + epsilon
+    xt_deltat = xt + epsilon # x_{t + \delta}
 
     return xt_deltat, t + schedule.delta_t # t + \deltat will be in interval [0, 1]
 
 
 if __name__ == "__main__":
-    
-    #######################
-    # test Schedule class #
-    #######################
-    T = 1000
-    schedule = Schedule(T)
-
-    x0 = torch.randn((2, 1, 2))
-    print(schedule.sample_batch(x0))
 
     ##########################################
     # test generate_training_sample function #
     ##########################################
-    x0 = torch.randn((2, 1, 2))
+    x0 = torch.randn((10, 2))
     sigma2_q = 10
     T = 1000
     schedule = Schedule(T)

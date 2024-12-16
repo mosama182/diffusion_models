@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 import matplotlib.pyplot as plt
 
@@ -27,7 +27,13 @@ if __name__ == "__main__":
     ###################
     # test data class #
     ###################
-    dataset = SwissRoll(np.pi/2, 5 * np.pi, 100)
+    ndata = 100
+    dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
+
+    data_loader = DataLoader(dataset=dataset, batch_size=10)
+
+    for batch in data_loader:
+        print(batch.shape)
 
     plt.figure()    
     plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1])
