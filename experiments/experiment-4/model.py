@@ -11,7 +11,7 @@ class TimeInputMLP(nn.Module):
         layers = []
         layers.extend([nn.Linear(num_input + 2, num_hidden), nn.ReLU()])
         layers.extend([nn.Linear(num_hidden, num_hidden), nn.ReLU()])
-        layers.extend([nn.Linear(num_hidden, num_hidden)], nn.ReLU())
+        layers.extend([nn.Linear(num_hidden, num_hidden), nn.ReLU()])
         num_output = num_input
         layers.append(nn.Linear(num_hidden, num_output))
 
@@ -34,3 +34,12 @@ class TimeInputMLP(nn.Module):
 
         return self.net(model_input) # \hat{x_{t}}
     
+
+if __name__ == "__main__":
+
+    xt_delta = torch.randn((10, 2))
+    t_delta = torch.rand((10, ))
+    
+    model = TimeInputMLP()
+    model_output = model(xt_delta, t_delta)
+    print(model_output.shape)
