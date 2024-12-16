@@ -1,0 +1,10 @@
+# nos. of data points
+ndata: 100
+
+# diffusion forward process parameters
+T: 500
+sigma2_q: 50
+
+# training parameters
+lr: 1e-3
+epochs: 100

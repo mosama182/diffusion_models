@@ -49,10 +49,13 @@ first fully connected layer has input dimension of 4. The output layer has dimen
 2, and estimated \hat{x_{t}}
 
 """
+import os
 
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+import yaml
+
 from torch.utils.data import DataLoader
 from torch import nn
 
@@ -60,11 +63,11 @@ from diffusion import Schedule, generate_training_sample
 from model import TimeInputMLP
 from data import SwissRoll
 
-def training_loop(dataloader :DataLoader, 
-                  model     :nn.Module, 
-                  schedule  : Schedule,
-                  lr        : float = 1e-5,
-                  epochs    : int = 10000):
+def training_loop(dataloader : DataLoader, 
+                  model      : nn.Module, 
+                  schedule   : Schedule,
+                  lr         : float = 1e-5,
+                  epochs     : int = 10000):
     
     # training
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -83,10 +86,17 @@ def training_loop(dataloader :DataLoader,
 
     return loss_epochs
 
+
 if __name__ == "__main__":
 
+    # read configuration file
+    root = os.path.dirname(__file__)
+    yaml_file = os.path.join(root, "confg.yaml")
+    with open(yaml_file, 'r') as file:
+        confg_data = yaml.safe_load(file)
+        
     # dataloader
-    ndata = 100
+    ndata = confg_data['ndata']
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
     dataloader = DataLoader(dataset=dataset, batch_size=10)
 
@@ -95,13 +105,13 @@ if __name__ == "__main__":
     model.train()
 
     # diffusion forward process parameters
-    T = 1000
-    sigma2_q = 10
+    T = confg_data['T']
+    sigma2_q = confg_data['sigma2_q']
     schedule = Schedule(sigma2_q, T)
 
     # train
-    epochs = 100
-    lr = 1e-3
+    epochs = confg_data['epochs']
+    lr = float(confg_data['lr'])
     loss_epochs = training_loop(dataloader, model, schedule, lr=lr, epochs=epochs)
     
     #plot training loss
@@ -111,3 +121,4 @@ if __name__ == "__main__":
     plt.xlabel(r'epoch')
     plt.ylabel(r'Training loss')
     plt.show()
+    
