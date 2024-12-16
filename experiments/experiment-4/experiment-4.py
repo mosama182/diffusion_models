@@ -49,3 +49,65 @@ first fully connected layer has input dimension of 4. The output layer has dimen
 2, and estimated \hat{x_{t}}
 
 """
+
+import torch
+import numpy as np
+import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
+from torch import nn
+
+from diffusion import Schedule, generate_training_sample
+from model import TimeInputMLP
+from data import SwissRoll
+
+def training_loop(dataloader :DataLoader, 
+                  model     :nn.Module, 
+                  schedule  : Schedule,
+                  lr        : float = 1e-5,
+                  epochs    : int = 10000):
+    
+    # training
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    loss_epochs = []
+    for epoch in range(epochs):
+        for x0 in dataloader:
+            optimizer.zero_grad()
+            xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
+            xt_hat = model(xt_deltat, t_deltat)
+            loss = nn.MSELoss()(xt_hat, xt)
+            loss.backward()
+            optimizer.step()
+
+        print(f"Epoch [{epoch}/{epochs}], Loss: {loss.item():.4f}")
+        loss_epochs.append(loss.item())
+
+    return loss_epochs
+
+if __name__ == "__main__":
+
+    # dataloader
+    ndata = 100
+    dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
+    dataloader = DataLoader(dataset=dataset, batch_size=10)
+
+    # model
+    model = TimeInputMLP()
+    model.train()
+
+    # diffusion forward process parameters
+    T = 1000
+    sigma2_q = 10
+    schedule = Schedule(sigma2_q, T)
+
+    # train
+    epochs = 100
+    lr = 1e-3
+    loss_epochs = training_loop(dataloader, model, schedule, lr=lr, epochs=epochs)
+    
+    #plot training loss
+    plt.figure()
+    plt.plot(range(epochs), loss_epochs)
+    plt.grid()
+    plt.xlabel(r'epoch')
+    plt.ylabel(r'Training loss')
+    plt.show()
