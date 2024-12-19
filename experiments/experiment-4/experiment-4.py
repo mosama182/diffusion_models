@@ -67,7 +67,8 @@ def training_loop(dataloader : DataLoader,
                   model      : nn.Module, 
                   schedule   : Schedule,
                   lr         : float = 1e-5,
-                  epochs     : int = 10000):
+                  epochs     : int = 10000, 
+                  model_dir  : str=''):
     
     # training
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -96,6 +97,7 @@ def training_loop(dataloader : DataLoader,
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': loss_epoch
         }
+    torch.save(checkpoint, os.path.join(model_dir, 'model.pth'))
 
     return loss_epochs
 
@@ -125,7 +127,8 @@ if __name__ == "__main__":
     # train
     epochs = confg_data['epochs']
     lr = float(confg_data['lr'])
-    loss_epochs = training_loop(dataloader, model, schedule, lr=lr, epochs=epochs)
+    model_dir = os.path.join(root, 'models')
+    loss_epochs = training_loop(dataloader, model, schedule, lr=lr, epochs=epochs, model_dir=model_dir)
     
     #plot training loss
     plt.figure()
