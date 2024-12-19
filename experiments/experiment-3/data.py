@@ -1,3 +1,5 @@
+import os
+
 import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
@@ -27,19 +29,25 @@ if __name__ == "__main__":
     ###################
     # test data class #
     ###################
-    ndata = 100
+    ndata = 50
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
 
-    data_loader = DataLoader(dataset=dataset, batch_size=10)
+    #data_loader = DataLoader(dataset=dataset, batch_size=10)
 
-    for batch in data_loader:
-        print(batch.shape)
+    #for batch in data_loader:
+    #    print(batch.shape)
 
     plt.figure()    
     plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1])
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
-    plt.show()
+    #plt.show()
+
+    # save figure
+    root = os.path.dirname(__file__)
+    fig_dir = os.path.join(root, 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
+    plt.savefig(os.path.join(fig_dir, 'data.jpg'))
 
     
