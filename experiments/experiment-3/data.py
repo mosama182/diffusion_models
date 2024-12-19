@@ -44,7 +44,7 @@ if __name__ == "__main__":
     plt.ylabel(r'$y$')
     #plt.show()
 
-    # save figure
+    # save data figure
     root = os.path.dirname(__file__)
     fig_dir = os.path.join(root, 'figures')
     os.makedirs(fig_dir, exist_ok=True)

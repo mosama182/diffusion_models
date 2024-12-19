@@ -136,6 +136,11 @@ if __name__ == "__main__":
     plt.plot(range(epochs), loss_epochs)
     plt.grid()
     plt.xlabel(r'epoch')
-    plt.ylabel(r'Training loss')
-    plt.show()
+    plt.ylabel(r'Training loss- Estimate $\widehat{E}~[x_{t} ~|~ x_{t + \Delta {t}}~]$')
+    #plt.show()
+
+    # save train loss
+    fig_dir = os.path.join(root, 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
+    plt.savefig(os.path.join(fig_dir, 'train_loss.jpg'))
     
