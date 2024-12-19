@@ -73,6 +73,7 @@ def training_loop(dataloader : DataLoader,
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_epochs = []
     for epoch in range(epochs):
+        batch_loss = 0
         for x0 in dataloader:
             optimizer.zero_grad()
             xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
@@ -81,8 +82,20 @@ def training_loop(dataloader : DataLoader,
             loss.backward()
             optimizer.step()
 
-        print(f"Epoch [{epoch}/{epochs}], Loss: {loss.item():.4f}")
-        loss_epochs.append(loss.item())
+            batch_loss += loss.item()
+        
+        loss_epoch = batch_loss / len(dataloader)
+        loss_epochs.append(loss_epoch)
+
+        print(f"Epoch [{epoch}/{epochs}], Loss: {loss_epoch:.4f}")
+        
+    # save model checkpoint
+    checkpoint = {
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss_epoch
+        }
 
     return loss_epochs
 
@@ -103,7 +116,7 @@ if __name__ == "__main__":
     # model
     model = TimeInputMLP()
     model.train()
-
+   
     # diffusion forward process parameters
     T = confg_data['T']
     sigma2_q = confg_data['sigma2_q']
