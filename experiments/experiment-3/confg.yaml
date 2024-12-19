@@ -1,5 +1,5 @@
 # nos. of data points
-ndata: 100
+ndata: 50
 
 # diffusion forward process parameters
 T: 500

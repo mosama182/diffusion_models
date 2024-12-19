@@ -97,6 +97,7 @@ def training_loop(dataloader : DataLoader,
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': loss_epoch
         }
+    os.makedirs(model_dir, exist_ok=True)
     torch.save(checkpoint, os.path.join(model_dir, 'model.pth'))
 
     return loss_epochs
