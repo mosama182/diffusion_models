@@ -110,8 +110,9 @@ if __name__ == "__main__":
 
     # single sample
     x0, trajectory = sampler.sample(model)
+    print(trajectory)
 
-    plt.figure()
-    plt.scatter(trajectory[:, 0], trajectory[:, 1])
-    plt.show()
+    #plt.figure()
+    #plt.scatter(trajectory[:, 0], trajectory[:, 1])
+    #plt.show()
 
