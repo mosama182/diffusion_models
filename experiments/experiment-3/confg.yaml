@@ -2,8 +2,8 @@
 ndata: 50
 
 # diffusion forward process parameters
-T: 500
-sigma2_q: 50
+T: 100
+sigma2_q: 5
 
 # training parameters
 lr: 1e-3
