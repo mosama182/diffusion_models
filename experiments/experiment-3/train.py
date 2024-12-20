@@ -58,6 +58,7 @@ import yaml
 
 from torch.utils.data import DataLoader
 from torch import nn
+from tqdm import tqdm
 
 from diffusion import Schedule, generate_training_sample
 from model import TimeInputMLP
@@ -73,7 +74,7 @@ def training_loop(dataloader : DataLoader,
     # training
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_epochs = []
-    for epoch in range(epochs):
+    for epoch in tqdm(range(epochs)):
         batch_loss = 0
         for x0 in dataloader:
             optimizer.zero_grad()
@@ -88,7 +89,8 @@ def training_loop(dataloader : DataLoader,
         loss_epoch = batch_loss / len(dataloader)
         loss_epochs.append(loss_epoch)
 
-        print(f"Epoch [{epoch}/{epochs}], Loss: {loss_epoch:.4f}")
+        #if epoch % 10 == 0:
+        #    print(f"Epoch [{epoch}/{epochs}], Loss: {loss_epoch:.4f}")
         
     # save model checkpoint
     checkpoint = {
@@ -114,7 +116,8 @@ if __name__ == "__main__":
     # dataloader
     ndata = confg_data['ndata']
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
-    dataloader = DataLoader(dataset=dataset, batch_size=10)
+    print(f"Single data point: {dataset.vals}")
+    dataloader = DataLoader(dataset=dataset, batch_size=ndata)
 
     # model
     model = TimeInputMLP()
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     plt.plot(range(epochs), loss_epochs)
     plt.grid()
     plt.xlabel(r'epoch')
-    plt.ylabel(r'Training loss- Estimate $\widehat{E}~[x_{t} ~|~ x_{t + \Delta {t}}~]$')
+    plt.ylabel(r'Training loss')
     #plt.show()
 
     # save train loss

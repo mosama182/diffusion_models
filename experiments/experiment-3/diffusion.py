@@ -42,9 +42,10 @@ if __name__ == "__main__":
     ##########################################
     # test generate_training_sample function #
     ##########################################
-    x0 = torch.randn((10, 2))
-    sigma2_q = 10
-    T = 1000
+    x0 = torch.tensor([0.5, 0.5], dtype=torch.float)
+    sigma2_q = 1
+    T = 100
     schedule = Schedule(sigma2_q, T)
+    
     xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
-    print(xt.shape, xt_deltat.shape, t_deltat.shape)
+    print(schedule.time)

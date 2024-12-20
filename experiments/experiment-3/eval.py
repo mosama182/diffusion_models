@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 5
+    nsamples = 1
     samples = []
     trajectories = []
     print(f"Drawing samples from DDIM sampler")

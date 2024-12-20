@@ -57,10 +57,15 @@ class DDIMSampler:
         else:
             exp_xt_deltat = model(xt, t) # maybe it is just some function
 
-        sigma_t = np.sqrt(self.sigma2_q * t)
-        sigma_t_deltat = np.sqrt(self.sigma2_q * (t - self.delta_t))
-        scale = sigma_t / (sigma_t + sigma_t_deltat)
-        update = scale * (exp_xt_deltat - xt)
+        scale = np.sqrt(t)/ (np.sqrt(t) + np.sqrt(t-self.delta_t))
+        
+        # update DDPM
+        update = exp_xt_deltat + np.random.multivariate_normal(mean=[0, 0], 
+                                                               cov=[[self.sigma2_q * self.delta_t, 0], [0, self.sigma2_q * self.delta_t]], 
+                                                               size=1).reshape(-1, 2) 
+        # DDIM
+        #update =  scale * (exp_xt_deltat - xt)
+
 
         return update
     
@@ -83,7 +88,7 @@ class DDIMSampler:
             trajectory.append(x.tolist())
             update = self._update(x, t, model)
             x += update
-        
+            
         trajectory.append(x.tolist())
         trajectory = np.array(trajectory).reshape(-1, 2)
 
@@ -109,10 +114,17 @@ if __name__ == "__main__":
     model.eval()
 
     # single sample
-    x0, trajectory = sampler.sample(model)
-    print(trajectory)
+    #x0, trajectory = sampler.sample(model)
+    #print(trajectory)
 
     #plt.figure()
     #plt.scatter(trajectory[:, 0], trajectory[:, 1])
+    #plt.grid()
     #plt.show()
-
+    x_input = torch.tensor([0.0, 0.0], dtype=torch.float).reshape(-1, 2)
+    
+    for t in np.linspace(1, 1/1000, 1000):
+        t_input = torch.tensor(t, dtype=torch.float).reshape((1, ))
+        x_output = model(x_input, t_input)
+        print(x_input, x_output)
+        x_input = x_output

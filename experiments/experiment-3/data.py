@@ -15,7 +15,8 @@ class SwissRoll(Dataset):
         center = torch.tensor(center).unsqueeze(0) # shape after unsqueeze (1, 2)
 
         # diving by tmax to ensure that the radius is 1 and can be controlled by scale variable
-        self.vals = center + scale * torch.stack([t * torch.cos(t) / tmax, t * torch.sin(t) / tmax]).T
+        #self.vals = center + scale * torch.stack([t * torch.cos(t) / tmax, t * torch.sin(t) / tmax]).T
+        self.vals = torch.tensor([0.5, 0.5], dtype=torch.float).reshape(-1, 2)
 
     def __len__(self):
         return len(self.vals)
