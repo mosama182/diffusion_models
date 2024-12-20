@@ -3,7 +3,7 @@ import os
 import numpy as np
 import torch
 import yaml
-
+import matplotlib.pyplot as plt
 
 class DDIMSampler:
     """
@@ -80,11 +80,11 @@ class DDIMSampler:
         x = x.reshape(-1, 2) # force shape (1, 2)
 
         for t in time_steps:
-            trajectory.append(x)
+            trajectory.append(x.tolist())
             update = self._update(x, t, model)
             x += update
         
-        trajectory.append(x)
+        trajectory.append(x.tolist())
         trajectory = np.array(trajectory).reshape(-1, 2)
 
         return x, trajectory
@@ -111,5 +111,7 @@ if __name__ == "__main__":
     # single sample
     x0, trajectory = sampler.sample(model)
 
-    print(x0)
+    plt.figure()
+    plt.scatter(trajectory[:, 0], trajectory[:, 1])
+    plt.show()
 
