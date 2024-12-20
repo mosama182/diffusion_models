@@ -26,9 +26,10 @@ class TimeInputMLP(nn.Module):
     
     def forward(self, x, t):
         """
-        x : (batch_size, 2) # x_{t + \deltat}
-        t: (batch_size, )   # t + \deltat
+        x : tensor (batch_size, 2) # x_{t + \deltat}
+        t: tensor (batch_size, )   # t + \deltat
         """
+        
         time_embed = self.time_embed(t) # (batch_size, 2)
         model_input = torch.cat([x, time_embed], dim=1) # (batch_size, 4)
 
