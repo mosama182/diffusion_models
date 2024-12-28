@@ -2,9 +2,9 @@
 ndata: 1
 
 # diffusion forward process parameters
-T: 1000
+T: 200
 sigma2_q: 1
 
 # training parameters
 lr: 1e-3
-epochs: 5000
+epochs: 10000
