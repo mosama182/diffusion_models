@@ -60,7 +60,7 @@ from torch.utils.data import DataLoader
 from torch import nn
 from tqdm import tqdm
 
-from diffusion import Schedule, generate_training_sample
+from diffusion import Schedule, generate_training_sample, generate_entire_trajectory
 from model import TimeInputMLP
 from data import SwissRoll
 
@@ -78,9 +78,10 @@ def training_loop(dataloader : DataLoader,
         batch_loss = 0
         for x0 in dataloader:
             optimizer.zero_grad()
-            xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
-            x0_hat = model(xt_deltat, t_deltat)
-            loss = nn.MSELoss()(x0_hat, x0)
+            #xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
+            xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
+            xt_hat = model(xt_deltat, t_deltat)
+            loss = nn.MSELoss()(xt_hat, xt)
             loss.backward()
             optimizer.step()
 
@@ -145,5 +146,5 @@ if __name__ == "__main__":
     # save train loss
     fig_dir = os.path.join(root, 'figures')
     os.makedirs(fig_dir, exist_ok=True)
-    plt.savefig(os.path.join(fig_dir, 'train_loss.jpg'))
+    plt.savefig(os.path.join(fig_dir, 'train_loss_gen_entire_traj.jpg'))
     

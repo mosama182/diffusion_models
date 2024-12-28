@@ -55,7 +55,7 @@ def generate_entire_trajectory(x0:torch.FloatTensor, schedule:Schedule):
     delta_t = schedule.delta_t
 
     # t = [delta_t, 2_deltat, ..., 1]
-    t_axis  = torch.linspace(schedule.delta_t, 1, T).reshape(schedule.T, 1)
+    t_axis  = torch.linspace(schedule.delta_t, 1, T)
     
     # x_deltat, x_2deltat, ..., x1
     Xt_deltat = torch.zeros(size=(T, 2))
