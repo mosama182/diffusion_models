@@ -1,5 +1,8 @@
 import torch
 import numpy as np
+from tqdm import tqdm
+
+import matplotlib.pyplot as plt
 
 class Schedule:
     def __init__(self, sigma2_q, T) -> None:
@@ -44,8 +47,18 @@ if __name__ == "__main__":
     ##########################################
     x0 = torch.tensor([0.5, 0.5], dtype=torch.float)
     sigma2_q = 1
-    T = 100
+    T = 1000
     schedule = Schedule(sigma2_q, T)
     
-    xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
-    print(schedule.time)
+    xt_list = []
+    for epoch in tqdm(range(100)):
+        for _ in range(T):
+            xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
+            xt_list.append(xt.numpy())
+
+    xt = np.array(xt_list).reshape(-1, 2)
+    plt.figure()
+    plt.scatter(xt[:, 0], xt[:, 1])
+    plt.scatter(x0.numpy()[0], x0.numpy()[1])
+    plt.grid()
+    plt.show()
