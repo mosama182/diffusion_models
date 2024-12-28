@@ -27,7 +27,7 @@ if __name__ == "__main__":
         confg_data = yaml.safe_load(file)
 
     # underlying spiral/Swiss roll data
-    ndata = 1000
+    ndata = 1
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
 
     # load model ckpt
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 1
+    nsamples = 1000
     samples = []
     trajectories = []
     print(f"Drawing samples from DDIM sampler")
@@ -50,15 +50,19 @@ if __name__ == "__main__":
         trajectories.append(trajectory)
     
     samples = np.array(samples).reshape(-1, 2)
-    print(samples)
+    #print(samples)
+    #print(trajectories)
 
     # plot 
     #plt.figure()
-    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Spiral')
+    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Data')
+    #plt.scatter(trajectories[0][:, 0], trajectories[0][:, 1], label=r'Trajectory')
     plt.scatter(samples[:, 0], samples[:, 1], label=r'Samples DDIM')
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
+    #plt.xlim([-1, 1])
+    #plt.ylim([-1, 1])
     #plt.legend()
     #plt.xlim([-3, 3])
     #plt.ylim([-3, 3])
