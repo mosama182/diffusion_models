@@ -47,16 +47,14 @@ class DDIMSampler:
                \hat{E}[x_{t - \deltat} | x_{t}]
         """
         # \hat{E}[x_{t - \deltat} | x_{t}]
-        if isinstance(model, torch.nn.Module):
-            with torch.no_grad():
-                device = next(model.parameters()).device
-                xt_tensor = torch.tensor(xt, dtype=torch.float).to(device)
-                t_tensor = torch.tensor(t, dtype=torch.float).reshape((1, )).to(device)
-                exp_xt_deltat = model(xt_tensor, t_tensor)
-                exp_xt_deltat = exp_xt_deltat.numpy() # 1 x 2 numpy array
-        else:
-            exp_xt_deltat = model(xt, t) # maybe it is just some function
-
+        with torch.no_grad():
+            device = next(model.parameters()).device
+            xt_tensor = torch.tensor(xt, dtype=torch.float).to(device)
+            t_tensor = torch.tensor(t, dtype=torch.float).reshape((1, )).to(device)
+            exp_x0_xt = model(xt_tensor, t_tensor)
+            exp_xt_deltat = (self.delta_t / t_tensor) * exp_x0_xt + (1 - self.delta_t / t_tensor) * xt_tensor
+            exp_xt_deltat = exp_xt_deltat.numpy() # 1 x 2 numpy array
+        
         scale = np.sqrt(t)/ (np.sqrt(t) + np.sqrt(t-self.delta_t))
         
         # update DDPM
@@ -87,7 +85,7 @@ class DDIMSampler:
         for t in time_steps:
             trajectory.append(x.tolist())
             update = self._update(x, t, model)
-            x += update
+            x = update
             
         trajectory.append(x.tolist())
         trajectory = np.array(trajectory).reshape(-1, 2)
@@ -121,10 +119,27 @@ if __name__ == "__main__":
     #plt.scatter(trajectory[:, 0], trajectory[:, 1])
     #plt.grid()
     #plt.show()
-    x_input = torch.tensor([0.0, 0.0], dtype=torch.float).reshape(-1, 2)
-    
-    for t in np.linspace(1, 1/1000, 1000):
-        t_input = torch.tensor(t, dtype=torch.float).reshape((1, ))
-        x_output = model(x_input, t_input)
-        print(x_input, x_output)
-        x_input = x_output
+
+    # have trained model to predict x0_hat directly
+    sigma2_q = confg_data['sigma2_q']
+    x0_hat = []
+    xi = []
+    for _ in range(100):
+        x = np.random.multivariate_normal(mean=[0, 0], cov=[[sigma2_q, 0], [0, sigma2_q]], 
+                                          size=1).reshape(-1, 2)
+        xi.append(x)
+        x_input = torch.tensor(x, dtype=torch.float)
+        t_input = torch.tensor(1, dtype=torch.float).reshape((1, ))
+        with torch.no_grad():
+            x_output = model(x_input, t_input)
+        x0_hat.append(x_output.numpy())
+
+    x0_hat = np.array(x0_hat).reshape(-1, 2)
+    xi = np.array(xi).reshape(-1, 2)
+
+    plt.figure()
+    plt.scatter(xi[:, 0], xi[:, 1], label='$x_{1}$')
+    plt.scatter(x0_hat[:, 0], x0_hat[:, 1], label='$\widehat{x}_{0}$')
+    plt.grid()
+    plt.legend()
+    plt.show()
