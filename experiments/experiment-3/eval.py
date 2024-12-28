@@ -43,27 +43,32 @@ if __name__ == "__main__":
     nsamples = 1000
     samples = []
     trajectories = []
-    print(f"Drawing samples from DDIM sampler")
+    last_point_traj = []
+    print(f"Drawing samples from DDPM sampler")
     for _ in tqdm(range(nsamples)):
         x0, trajectory = sampler.sample(model)
         samples.append(x0)
         trajectories.append(trajectory)
+        last_point_traj.append(trajectory[-1])
     
     samples = np.array(samples).reshape(-1, 2)
+    last_point_traj = np.array(last_point_traj).reshape(-1, 2)
     #print(samples)
     #print(trajectories)
 
     # plot 
     #plt.figure()
-    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Data')
     #plt.scatter(trajectories[0][:, 0], trajectories[0][:, 1], label=r'Trajectory')
-    plt.scatter(samples[:, 0], samples[:, 1], label=r'Samples DDIM')
+    plt.scatter(last_point_traj[:, 0], last_point_traj[:, 1], label=r'Samples DDIM')
+    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Data point')
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
-    #plt.xlim([-1, 1])
-    #plt.ylim([-1, 1])
-    #plt.legend()
-    #plt.xlim([-3, 3])
-    #plt.ylim([-3, 3])
-    plt.show()
+    plt.legend()
+    plt.title(f'Samples when learning $E[x_0 | x_t]$ from data')
+
+    #plt.show()
+
+    # save figure
+    fig_dir = os.path.join(root, 'figures')
+    plt.savefig(os.path.join(fig_dir, 'eval.jpg'))

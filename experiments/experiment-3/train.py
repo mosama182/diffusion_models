@@ -117,7 +117,7 @@ if __name__ == "__main__":
     ndata = confg_data['ndata']
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
     print(f"Single data point: {dataset.vals}")
-    dataloader = DataLoader(dataset=dataset, batch_size=25)
+    dataloader = DataLoader(dataset=dataset, batch_size=1)
 
     # model
     model = TimeInputMLP()
