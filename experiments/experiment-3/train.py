@@ -81,7 +81,7 @@ def training_loop(dataloader : DataLoader,
             #xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
             xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
             xt_hat = model(xt_deltat, t_deltat)
-            loss = nn.MSELoss()(xt_hat, xt)
+            loss = nn.MSELoss()(xt_hat, x0)
             loss.backward()
             optimizer.step()
 

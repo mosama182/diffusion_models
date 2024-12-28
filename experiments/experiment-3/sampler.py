@@ -55,13 +55,13 @@ class DDIMSampler:
             #################################
             # Model estimates E[x_{0}| x_{t}]
             #################################
-            #exp_x0_xt = model(xt_tensor, t_tensor)
-            #exp_xt_deltat = (self.delta_t / t_tensor) * exp_x0_xt + (1 - self.delta_t / t_tensor) * xt_tensor
+            exp_x0_xt = model(xt_tensor, t_tensor)
+            exp_xt_deltat = (self.delta_t / t_tensor) * exp_x0_xt + (1 - self.delta_t / t_tensor) * xt_tensor
             
             #######################################
             # Model estimates E[x_{t}| x_{t_delta}]
             #######################################
-            exp_xt_deltat = model(xt_tensor, t_tensor)
+            #exp_xt_deltat = model(xt_tensor, t_tensor)
 
             # convert to numpy
             exp_xt_deltat = exp_xt_deltat.numpy() # 1 x 2 numpy array
