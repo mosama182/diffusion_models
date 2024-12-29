@@ -10,9 +10,9 @@ class Schedule:
         self.delta_t = 1 / T
         self.sigma2_q = sigma2_q
 
-        # t will have values 0, \deltat, 2\deltat, ..., 1 - \deltaT
+        # t will have values \deltat, 2\deltat, ..., 1
         # total T values
-        self.time = torch.linspace(0, 1 - self.delta_t, T) 
+        self.time = torch.linspace(self.delta_t, 1, T) 
     
     def __len__(self):
         return len(self.time)
@@ -34,10 +34,10 @@ def generate_training_sample(x0:torch.FloatTensor, schedule:Schedule):
     eta_t = torch.sqrt(schedule.sigma2_q * t).unsqueeze(1) * torch.randn_like(x0)
     xt = x0 + eta_t # x_{t}
     
-    epsilon = np.sqrt(schedule.sigma2_q * schedule.delta_t) * torch.rand_like(xt)
-    xt_deltat = xt + epsilon # x_{t + \delta}
+    #epsilon = np.sqrt(schedule.sigma2_q * schedule.delta_t) * torch.rand_like(xt)
+    #xt_deltat = xt + epsilon # x_{t + \delta}
 
-    return xt, xt_deltat, t + schedule.delta_t # t + \deltat will be in interval [0, 1]
+    return xt, t  # x_{t}
 
 
 def generate_entire_trajectory(x0:torch.FloatTensor, schedule:Schedule):
@@ -76,25 +76,20 @@ if __name__ == "__main__":
     ##########################################
     # test generate_training_sample function #
     ##########################################
-    x0 = torch.tensor([0.0, 0.0], dtype=torch.float)
+    x0 = torch.tensor([[0.0, 0.0], [1.0, 1.0]], dtype=torch.float)
     x0 = x0.reshape(-1, 2)
     sigma2_q = 1
     T = 200
     schedule = Schedule(sigma2_q, T)
     
-    """
-    xt_list = []
-    for epoch in tqdm(range(100)):
-        for _ in range(T):
-            xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
-            xt_list.append(xt.numpy())
+    xt, t = generate_training_sample(x0, schedule)
 
-    xt = np.array(xt_list).reshape(-1, 2)
     plt.figure()
     plt.scatter(xt[:, 0], xt[:, 1])
-    plt.scatter(x0.numpy()[0], x0.numpy()[1])
     plt.grid()
     plt.show()
+    
+
     """
     Xt, Xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
 
@@ -104,3 +99,4 @@ if __name__ == "__main__":
     plt.plot(Xt[:, 0], Xt[:, 1])
     plt.plot(Xt_deltat[:, 0], Xt_deltat[:, 1])
     plt.show()
+    """
