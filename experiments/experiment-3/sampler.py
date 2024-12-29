@@ -131,6 +131,7 @@ if __name__ == "__main__":
     #plt.grid()
     #plt.show()
 
+    
     # have trained model to predict x0_hat directly
     sigma2_q = confg_data['sigma2_q']
     x0_hat = []
@@ -143,6 +144,7 @@ if __name__ == "__main__":
         t_input = torch.tensor(1, dtype=torch.float).reshape((1, ))
         with torch.no_grad():
             x_output = model(x_input, t_input)
+            print(x_output)
         x0_hat.append(x_output.numpy())
 
     x0_hat = np.array(x0_hat).reshape(-1, 2)
@@ -154,3 +156,4 @@ if __name__ == "__main__":
     plt.grid()
     plt.legend()
     plt.show()
+    
