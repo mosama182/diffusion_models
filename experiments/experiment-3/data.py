@@ -15,10 +15,10 @@ class SwissRoll(Dataset):
         center = torch.tensor(center).unsqueeze(0) # shape after unsqueeze (1, 2)
 
         # diving by tmax to ensure that the radius is 1 and can be controlled by scale variable
-        #self.vals = center + scale * torch.stack([t * torch.cos(t) / tmax, t * torch.sin(t) / tmax]).T
-        self.vals = torch.tensor([[1.0, 1.0], [-1.0, -1.0], 
-                                  [1.0, -1.0], [-1.0, 1.0], 
-                                  [0.0, 0.0]], dtype=torch.float).reshape(-1, 2)
+        self.vals = center + scale * torch.stack([t * torch.cos(t) / tmax, t * torch.sin(t) / tmax]).T
+        #self.vals = torch.tensor([[1.0, 1.0], [-1.0, -1.0], 
+        #                          [1.0, -1.0], [-1.0, 1.0], 
+        #                          [0.0, 0.0]], dtype=torch.float).reshape(-1, 2)
 
     def __len__(self):
         return len(self.vals)
@@ -32,8 +32,8 @@ if __name__ == "__main__":
     ###################
     # test data class #
     ###################
-    ndata = 50
-    dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
+    ndata = 100000
+    dataset = SwissRoll(np.pi/2, 4 * np.pi, ndata, scale=3.0)
 
     #data_loader = DataLoader(dataset=dataset, batch_size=10)
 
@@ -45,12 +45,12 @@ if __name__ == "__main__":
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
-    #plt.show()
+    plt.show()
 
     # save data figure
-    root = os.path.dirname(__file__)
-    fig_dir = os.path.join(root, 'figures')
-    os.makedirs(fig_dir, exist_ok=True)
-    plt.savefig(os.path.join(fig_dir, 'data.jpg'))
+    #root = os.path.dirname(__file__)
+    #fig_dir = os.path.join(root, 'figures')
+    #os.makedirs(fig_dir, exist_ok=True)
+    #plt.savefig(os.path.join(fig_dir, 'data.jpg'))
 
     
