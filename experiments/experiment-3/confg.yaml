@@ -1,10 +1,12 @@
 # nos. of data points
-ndata: 5
+ndata: 100000
+scale: 1.0
 
 # diffusion forward process parameters
-T: 200
+T: 1000
 sigma2_q: 1
 
 # training parameters
 lr: 1e-3
-epochs: 50000
+epochs: 500
+batch_size: 2048

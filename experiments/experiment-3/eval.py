@@ -45,7 +45,7 @@ if __name__ == "__main__":
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 1000
+    nsamples = 500
     samples = []
     trajectories = []
     last_point_traj = []
@@ -65,18 +65,18 @@ if __name__ == "__main__":
     plt.figure()
     #plt.scatter(trajectories[0][:, 0], trajectories[0][:, 1], label=r'Trajectory')
     plt.scatter(samples[:, 0], samples[:, 1], label=r'Samples DDPM')
-    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Data point')
+    plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Original data points')
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
     plt.legend()
     plt.title(f'Samples when learning $E[x_0 | x_t]$ from data')
 
-    plt.show()
+    #plt.show()
 
     # save figure
-    #fig_dir = os.path.join(root, 'figures')
-    #plt.savefig(os.path.join(fig_dir, 'eval.jpg'))
+    fig_dir = os.path.join(root, 'figures')
+    plt.savefig(os.path.join(fig_dir, 'eval.jpg'))
     
 
     """

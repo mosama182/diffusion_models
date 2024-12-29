@@ -152,11 +152,11 @@ if __name__ == "__main__":
     plt.grid()
     plt.xlabel(r'epoch')
     plt.ylabel(r'Training loss')
-    plt.show()
+    #plt.show()
 
     # save train loss
-    #fig_dir = os.path.join(root, 'figures')
-    #os.makedirs(fig_dir, exist_ok=True)
-    #plt.savefig(os.path.join(fig_dir, 'train_loss_gen_entire_traj.jpg'))
+    fig_dir = os.path.join(root, 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
+    plt.savefig(os.path.join(fig_dir, 'train_loss.jpg'))
 
     
