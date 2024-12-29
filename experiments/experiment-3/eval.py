@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 200
+    nsamples = 500
     samples = []
     trajectories = []
     last_point_traj = []

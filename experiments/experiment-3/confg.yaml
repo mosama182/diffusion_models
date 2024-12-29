@@ -7,4 +7,4 @@ sigma2_q: 1
 
 # training parameters
 lr: 1e-3
-epochs: 10000
+epochs: 50000
