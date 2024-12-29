@@ -17,6 +17,8 @@ from model import TimeInputMLP
 from sampler import DDIMSampler
 from tqdm import tqdm
 
+from diffusion import generate_training_sample, Schedule
+
 if __name__ == "__main__":
 
     
@@ -33,14 +35,15 @@ if __name__ == "__main__":
     # load model ckpt
     root = os.path.dirname(__file__)
     model = TimeInputMLP()
-    ckpt = torch.load(os.path.join(root, 'models', 'model.pth'), weights_only=True)
+    ckpt = torch.load(os.path.join(root, 'models', 'model.pth'))
     model.load_state_dict(ckpt['model_state_dict'])
     model.eval()
 
+    
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 1000
+    nsamples = 200
     samples = []
     trajectories = []
     last_point_traj = []
@@ -57,9 +60,9 @@ if __name__ == "__main__":
     #print(trajectories)
 
     # plot 
-    #plt.figure()
+    plt.figure()
     #plt.scatter(trajectories[0][:, 0], trajectories[0][:, 1], label=r'Trajectory')
-    plt.scatter(last_point_traj[:, 0], last_point_traj[:, 1], label=r'Samples DDIM')
+    plt.scatter(samples[:, 0], samples[:, 1], label=r'Samples DDPM')
     plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Data point')
     plt.grid()
     plt.xlabel(r'$x$')
@@ -67,8 +70,58 @@ if __name__ == "__main__":
     plt.legend()
     plt.title(f'Samples when learning $E[x_0 | x_t]$ from data')
 
-    #plt.show()
+    plt.show()
 
     # save figure
-    fig_dir = os.path.join(root, 'figures')
-    plt.savefig(os.path.join(fig_dir, 'eval.jpg'))
+    #fig_dir = os.path.join(root, 'figures')
+    #plt.savefig(os.path.join(fig_dir, 'eval.jpg'))
+    
+
+    """
+    x0 = torch.tensor([1.0, 1.0], dtype=torch.float).reshape(-1, 2)
+    schedule = Schedule(confg_data['sigma2_q'], confg_data['T'])
+    xt_list = []
+    xt_pred_list = []
+    error_list = []
+    for _ in range(1000):
+        xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
+        xt_list.append(xt.detach().numpy())
+
+        xt_pred = model(xt_deltat, t_deltat)
+        xt_pred_list.append(xt_pred.detach().numpy())
+
+        error = torch.sum((xt_pred - xt)).item()
+
+        error_list.append(error)
+
+    xt_list = np.array(xt_list).reshape(-1, 2)
+    xt_pred_list = np.array(xt_pred_list).reshape(-1, 2)
+
+    plt.figure()
+    plt.scatter(xt_list[:, 0], xt_list[:, 1], label=r'truth')
+    plt.scatter(xt_pred_list[:, 0], xt_pred_list[:, 1], label=r'pred')
+    plt.grid()
+    plt.show()
+
+    plt.figure()
+    plt.hist(error_list)
+    plt.show()
+    
+    
+    
+    schedule = Schedule(confg_data['sigma2_q'], confg_data['T'])
+    x1 = torch.tensor([2.56, -0.14], dtype=torch.float).reshape(-1, 2)
+    x1 = np.sqrt(schedule.sigma2_q) * torch.rand_like(x1)
+    t_axis = torch.linspace(1, schedule.delta_t, schedule.T)
+    print(f"x1: {x1}")
+
+    for t in t_axis:
+        t = torch.tensor([t])
+        x = model(x1, t)
+        print(x)
+        x1 = x + np.sqrt(schedule.sigma2_q * schedule.delta_t) * torch.rand_like(x)
+
+    print(f"x0: {x1}")
+    """    
+
+
