@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # load model ckpt
     root = os.path.dirname(__file__)
     model = TimeInputMLP()
-    ckpt = torch.load(os.path.join(root, 'models', 'model.pth'))
+    ckpt = torch.load(os.path.join(root, 'models', 'model.pth'), weights_only=True)
     model.load_state_dict(ckpt['model_state_dict'])
     model.eval()
 
