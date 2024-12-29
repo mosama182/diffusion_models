@@ -69,16 +69,25 @@ def training_loop(dataloader : DataLoader,
                   schedule   : Schedule,
                   lr         : float = 1e-5,
                   epochs     : int = 10000, 
-                  model_dir  : str=''):
+                  model_dir  : str='',
+                  device     : str='mps'):
     
     # training
+    model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_epochs = []
     for epoch in tqdm(range(epochs)):
         batch_loss = 0
         for x0 in dataloader:
+            
             optimizer.zero_grad()
             xt, t = generate_training_sample(x0, schedule)
+
+            # move to gpu
+            x0 = x0.to(device)
+            xt = xt.to(device)
+            t = t.to(device)
+            
             #xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
             x0_hat = model(xt, t)
             loss = nn.MSELoss()(x0_hat, x0)
@@ -94,6 +103,7 @@ def training_loop(dataloader : DataLoader,
         #    print(f"Epoch [{epoch}/{epochs}], Loss: {loss_epoch:.4f}")
         
     # save model checkpoint
+
     checkpoint = {
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
@@ -116,8 +126,10 @@ if __name__ == "__main__":
         
     # dataloader
     ndata = confg_data['ndata']
-    dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
-    dataloader = DataLoader(dataset=dataset, batch_size=5)
+    scale = confg_data['scale']
+    dataset = SwissRoll(np.pi/2, 4 * np.pi, ndata, scale=scale)
+    batch_size = confg_data['batch_size']
+    dataloader = DataLoader(dataset=dataset, batch_size=batch_size)
 
     # model
     model = TimeInputMLP()
