@@ -69,11 +69,11 @@ class DDIMSampler:
         scale = np.sqrt(t)/ (np.sqrt(t) + np.sqrt(t-self.delta_t))
         
         # update DDPM
-        #update = exp_xt_deltat + np.random.multivariate_normal(mean=[0, 0], 
-        #                                                       cov=[[self.sigma2_q * self.delta_t, 0], [0, self.sigma2_q * self.delta_t]], 
-        #                                                       size=1).reshape(-1, 2) 
+        update = exp_xt_deltat + np.random.multivariate_normal(mean=[0, 0], 
+                                                               cov=[[self.sigma2_q * self.delta_t, 0], [0, self.sigma2_q * self.delta_t]], 
+                                                               size=1).reshape(-1, 2) 
         # DDIM
-        update =  scale * (exp_xt_deltat - xt)
+        #update =  scale * (exp_xt_deltat - xt)
 
 
         return update
@@ -96,7 +96,7 @@ class DDIMSampler:
         for t in time_steps:
             trajectory.append(x.tolist())
             update = self._update(x, t, model)
-            x += update
+            x = update
             
         trajectory.append(x.tolist())
         trajectory = np.array(trajectory).reshape(-1, 2)

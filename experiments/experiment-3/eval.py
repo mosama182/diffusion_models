@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     # save figure
     fig_dir = os.path.join(root, 'figures')
-    plt.savefig(os.path.join(fig_dir, 'eval.jpg'))
+    plt.savefig(os.path.join(fig_dir, 'eval_ddpm_samples.jpg'))
     
 
     """
