@@ -78,10 +78,10 @@ def training_loop(dataloader : DataLoader,
         batch_loss = 0
         for x0 in dataloader:
             optimizer.zero_grad()
-            #xt, xt_deltat, t_deltat = generate_training_sample(x0, schedule)
-            xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
-            xt_hat = model(xt_deltat, t_deltat)
-            loss = nn.MSELoss()(xt_hat, x0)
+            xt, t = generate_training_sample(x0, schedule)
+            #xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
+            x0_hat = model(xt, t)
+            loss = nn.MSELoss()(x0_hat, x0)
             loss.backward()
             optimizer.step()
 
@@ -117,7 +117,6 @@ if __name__ == "__main__":
     # dataloader
     ndata = confg_data['ndata']
     dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
-    print(f"Single data point: {dataset.vals}")
     dataloader = DataLoader(dataset=dataset, batch_size=1)
 
     # model
@@ -141,10 +140,11 @@ if __name__ == "__main__":
     plt.grid()
     plt.xlabel(r'epoch')
     plt.ylabel(r'Training loss')
-    #plt.show()
+    plt.show()
 
     # save train loss
-    fig_dir = os.path.join(root, 'figures')
-    os.makedirs(fig_dir, exist_ok=True)
-    plt.savefig(os.path.join(fig_dir, 'train_loss_gen_entire_traj.jpg'))
+    #fig_dir = os.path.join(root, 'figures')
+    #os.makedirs(fig_dir, exist_ok=True)
+    #plt.savefig(os.path.join(fig_dir, 'train_loss_gen_entire_traj.jpg'))
+
     
