@@ -29,8 +29,9 @@ if __name__ == "__main__":
         confg_data = yaml.safe_load(file)
 
     # underlying spiral/Swiss roll data
-    ndata = 1
-    dataset = SwissRoll(np.pi/2, 5 * np.pi, ndata)
+    ndata = confg_data['ndata']
+    scale = confg_data['scale']
+    dataset = SwissRoll(np.pi/2, 4 * np.pi, ndata, scale=scale)
 
     # load model ckpt
     root = os.path.dirname(__file__)
@@ -38,12 +39,13 @@ if __name__ == "__main__":
     ckpt = torch.load(os.path.join(root, 'models', 'model.pth'), weights_only=True)
     model.load_state_dict(ckpt['model_state_dict'])
     model.eval()
+    #model = model.to("cpu")
 
     
     # sampler
     sampler = DDIMSampler(sigma2_q=confg_data['sigma2_q'], T=confg_data['T'])
 
-    nsamples = 500
+    nsamples = 1000
     samples = []
     trajectories = []
     last_point_traj = []
