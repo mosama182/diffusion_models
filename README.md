@@ -15,6 +15,7 @@ to test my own understanding of a concept or something similar. For example:
 - `experiment-3`: train a fully connected NN with ReLU activations to learn E[x_{0}| x_{t}] from synthetic Swiss roll data and then produce samples
                   from DDPM/DDIM sampling. 
 
-There is a description on the main script in each experiment that details what the experiment aims to do (I plan to add a `readme` file later). 
+There is a description on the main script in each experiment that details what the experiment aims to do (I plan to add a `readme` file for each experiment later). 
+
 There is also a `figures` subfolder in each experiment containing resulting figures that should be produced by running the main script. 
 These figures should give you some idea on what the experiment is about. 
