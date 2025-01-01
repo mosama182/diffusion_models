@@ -46,6 +46,7 @@ creating two functions/classes:
         #epsilon ~ N (0, \sigma2_q * \deltat) -- ignored 
         #x_{t + \deltat} = x_{t} + epsilon  -- ignored
 
+        
 ########
 NN MODEL
 ########
