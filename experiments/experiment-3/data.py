@@ -2,6 +2,8 @@ import os
 
 import torch
 import numpy as np
+import yaml
+
 from torch.utils.data import Dataset, DataLoader
 
 import matplotlib.pyplot as plt
@@ -32,25 +34,30 @@ if __name__ == "__main__":
     ###################
     # test data class #
     ###################
-    ndata = 100000
-    dataset = SwissRoll(np.pi/2, 4 * np.pi, ndata, scale=1.0)
 
-    #data_loader = DataLoader(dataset=dataset, batch_size=10)
+    # read configuration file
+    root = os.path.dirname(__file__)
+    yaml_file = os.path.join(root, "confg.yaml")
+    with open(yaml_file, 'r') as file:
+        confg_data = yaml.safe_load(file)
 
-    #for batch in data_loader:
-    #    print(batch.shape)
+    ndata = confg_data['ndata']
+    scale = confg_data['scale']
+    dataset = SwissRoll(np.pi/2, 4 * np.pi, ndata, scale=scale)
+
 
     plt.figure()    
     plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1])
     plt.grid()
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
-    #plt.show()
+    plt.title(r'Swiss roll synthetic data')
+    plt.show()
 
     # save data figure
-    root = os.path.dirname(__file__)
-    fig_dir = os.path.join(root, 'figures')
-    os.makedirs(fig_dir, exist_ok=True)
-    plt.savefig(os.path.join(fig_dir, 'data.jpg'))
+    #root = os.path.dirname(__file__)
+    #fig_dir = os.path.join(root, 'figures')
+    #os.makedirs(fig_dir, exist_ok=True)
+    #plt.savefig(os.path.join(fig_dir, 'data.jpg'))
 
     
