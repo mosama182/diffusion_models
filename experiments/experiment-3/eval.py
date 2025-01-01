@@ -48,22 +48,16 @@ if __name__ == "__main__":
     nsamples = 500
     samples = []
     trajectories = []
-    last_point_traj = []
     print(f"Drawing samples from DDPM sampler")
     for _ in tqdm(range(nsamples)):
         x0, trajectory = sampler.sample(model)
         samples.append(x0)
         trajectories.append(trajectory)
-        last_point_traj.append(trajectory[-1])
     
     samples = np.array(samples).reshape(-1, 2)
-    last_point_traj = np.array(last_point_traj).reshape(-1, 2)
-    #print(samples)
-    #print(trajectories)
 
     # plot 
     plt.figure()
-    #plt.scatter(trajectories[0][:, 0], trajectories[0][:, 1], label=r'Trajectory')
     plt.scatter(samples[:, 0], samples[:, 1], label=r'Samples DDPM')
     plt.scatter(dataset.vals[:, 0], dataset.vals[:, 1], label=r'Original data points')
     plt.grid()
@@ -76,6 +70,7 @@ if __name__ == "__main__":
 
     # save figure
     fig_dir = os.path.join(root, 'figures')
+    os.makedirs(fig_dir, exist_ok=True)
     plt.savefig(os.path.join(fig_dir, 'eval_ddpm_samples.jpg'))
     
 
