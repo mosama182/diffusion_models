@@ -88,7 +88,7 @@ def training_loop(dataloader : DataLoader,
             xt = xt.to(device)
             t = t.to(device)
             
-            #xt, xt_deltat, t_deltat = generate_entire_trajectory(x0, schedule)
+            # backpropagation
             x0_hat = model(xt, t)
             loss = nn.MSELoss()(x0_hat, x0)
             loss.backward()
@@ -152,6 +152,7 @@ if __name__ == "__main__":
     plt.grid()
     plt.xlabel(r'epoch')
     plt.ylabel(r'Training loss')
+    plt.title(r'Learning $E[x_o | x_t]$ from data')
     #plt.show()
 
     # save train loss
