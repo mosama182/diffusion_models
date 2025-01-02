@@ -1,6 +1,6 @@
 # Introduction
 
-In this repository, I am attempting to understand diffusion models from scratch using `Step-by-Step Diffusion: An Elementary Tutorial` [here](https://arxiv.org/abs/2406.08929).
+In this repository, I am attempting to understand diffusion models from scratch using [Step-by-Step Diffusion: An Elementary Tutorial](https://arxiv.org/abs/2406.08929).
 
 # Experiments
 
