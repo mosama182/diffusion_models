@@ -79,7 +79,7 @@ if __name__ == "__main__":
         plt.scatter(trajectory[:, 0], trajectory[:, 1], color=random_color, marker='x')
     
     # plot data distribution
-    plt.scatter(a[0], a[1], color='red', marker='o', label=r'$p_{0}(x_{0})=\delta(x_{0} - [2, 2])$')
+    plt.scatter(a[0], a[1], color='red', marker='o', label=r'$p_{0}(x_{0})=\delta(x_{0} - [2, 3])$')
     
     plt.grid()
     plt.xlabel(r'$x_{1}$')
@@ -88,6 +88,6 @@ if __name__ == "__main__":
     plt.ylim([-10, 10])
     plt.legend()
     plt.title('Trajectoreis from DDIM with toy data distribution $p_{0}(x_{0})$')
-    plt.savefig(os.path.join('figures', 'experiment-1-sample-trajectories-ddim.jpg.jpg'))  
+    plt.savefig(os.path.join('figures', 'experiment-1-sample-trajectories-ddim.jpg'))  
     #plt.show()  
     
