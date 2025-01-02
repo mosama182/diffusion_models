@@ -14,7 +14,7 @@ cd experiments/<experiment-name>
 python <name-of-main-script>.py
 ```
 
-Below is a short description of each experiment with illustraive figures.
+Below is a short description of each experiment with illustrative figures.
 
 ## Experiment-0
 
