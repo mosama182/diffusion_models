@@ -6,7 +6,7 @@ In this repository, I am attempting to understand diffusion models from scratch 
 
 The `experiments` folder contains subfolders corresponding to different experiements. Each experiment explores a small concept, performs a sanity check or creates a proof-of-concept setup to implement an idea (there are only four experiments right now but more will be added as I learn and explore diffusion models further).
 
-There is a description at the top of a main script in each experiment that details what the experiment aims to do (I plan to add a `readme` file for each experiment later). There is also a `figures` subfolder in each experiment containing resulting figures that should be produced by running the experiment. These figures should give some idea on what the experiment is about. To run an experiment (check [setup](#installation) first):
+There is a description at the top of a main script in each experiment that details what the experiment aims to do. There is also a `figures` subfolder in each experiment containing resulting figures that should be produced by running the experiment. These figures should give some idea on what the experiment is about. To run an experiment (check [setup](#installation) first):
 
 ```
 cd experiments/<experiment-name>
@@ -18,19 +18,30 @@ Below is a short description of each experiment with illustrative figures.
 
 ## Experiment-0
 
-For a known 1D-Gaussian data distribution (for which $E[x_{t-\Delta t}|x_{t}]$ can be manually obtained), this experiment demonstrates that starting from a base distribution, samples obtained from reverse sampling of DDPM and DDIM (using above $E[x_{t-\Delta t}|x_{t}]$) (Alg. (1) and (2) in the tutorial) produces a histogram that resembles the original data distribution. 
+For a known 1D-Gaussian data distribution $p_{o}(x_{o}) = \mathcal{N}(\mu_{0}, \sigma_{o}^{2})$, this experiment demonstrates that starting from samples from a base distribution $p_{1}(x_{1}) = \mathcal{N}(0, \sigma_{q}^{2})$, reverse sampling of DDPM and DDIM (Alg. (1) and (2) respectively in the tutorial) produces a histogram that resembles the original data distribution $p_{o}(x_{o})$. The conditional expectation needed for DDPM and DDIM can be obtained manually and is given by $$E[x_{t-\Delta t}|x_{t}] = \frac{1}{\sigma_{o}^{2} + \sigma_{q}^{2}t} \Big((\sigma_{o}^{2} + \sigma_{q}^{2}(t - \Delta t)) x_{t} + \sigma_{q}^{2}\Delta t \mu_{o} \Big).$$ 
 
 ![experiment-0](experiments/experiment-0/figures/experiment-0-samples-ddm-ddim-toy-example.jpg)
 
 ## Experiment-1
 
-For a degenerate data distribtion in 2D i.e., $p_o(x_{o}) = \delta(x_{o} - [2, 3])$ (again $E[x_{t-\Delta t}|x_{t}]$ can be obtained manually), this experiment plots the trajectories of DDIM samples during reverse sampling. The trajectories converge to the single data point. 
+For a degenerate data distribtion in 2D i.e., $p_o(\mathbf{x_{o}}) = \delta(\mathbf{x_{o}} - \mathbf{a})$, this experiment plots the trajectories of DDIM samples (Alg. (2) in the tutorial) during reverse sampling when starting from a base distribution  $p_{1}(x_{1}) = \mathcal{N}(\mathbf{0}, \sigma_{q}^{2}\mathbf{I})$. The trajectories move towards the single data point. Here $$E[x_{t-\Delta t}|x_{t}] = \frac{(t - \Delta t)}{t} \mathbf{x_{t}} + \frac{\Delta t}{t} \mathbf{a}.$$  
 
 ![experiment-1](experiments/experiment-1/figures/experiment-1-sample-trajectories-ddim.jpg)
 
 ## Experiment-2
 
-Same as `experiment-1` but $p_{o}(x_{o}) = 0.5 \delta(x_{o} - [2, 2]) + 0.5 \delta(x_{0} - [-2, 2])$. 
+Same as `experiment-1` but with data distribution being $p_{o}(\mathbf{x_{o}}) = 0.5 \delta(\mathbf{x_{o}} - \mathbf{a}) + 0.5 \delta(\mathbf{x_{0}} - \mathbf{b})$. The trajectories move towards one of the two data points. 
+
+Here,
+
+$$E[x_{t-\Delta t} | x_{t}] = p(x_{o} = a | x_{t}) * E[x_{t-\Delta t} | x_{t}, x_{o} = a] + p(x_{o} = b | x_{t}) * E[x_{t-\Delta t} | x_{t}, x_{o} = b],$$
+
+where the $E[x_{t-\Delta t} | x_{t}, x_{o} = a]$ is the same as in `experiment-1` and 
+
+$$p(x_{o} = a | x_{t}) = \frac{p_{o}(x_{o} = a) p(x_{t} | x_{o} = a)}{p_{t}(x_{t})}$$
+
+by Baye's rule. The expressions for $p(x_{t} | x_{o} = a)$ and $p_{t}(x_{t})$ can be obtained easily from the forward diffusion process.
+
 
 ![experiment-2](experiments/experiment-2/figures/experiment-2-sample-trajectories-ddim.jpg)
 
