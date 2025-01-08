@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
 
 from torch.utils.data import Dataset
 
@@ -14,8 +15,8 @@ class SyntheticData(Dataset):
                  num_turns=3, noise=0.1) -> None:
         
         self.num_samples = num_samples
-        self.source_data = self.generate_annular(num_samples, inner_radius, outer_radius)
-        self.target_data = self.generate_spiral(num_samples, num_turns, noise)
+        self.source_data = torch.tensor(self.generate_annular(num_samples, inner_radius, outer_radius), dtype=torch.float)
+        self.target_data = torch.tensor(self.generate_spiral(num_samples, num_turns, noise), dtype=torch.float)
 
     # Generate annular distribution: source distribution
     def generate_annular(self, num_samples, inner_radius, outer_radius):
@@ -36,11 +37,11 @@ class SyntheticData(Dataset):
         return data + noise
     
     def __len__(self):
-        return len(self.soure_data)
+        return len(self.source_data)
     
     
     def __getitem__(self, i):
-        return self.soure_data[i], self.target_data[i]
+        return self.source_data[i], self.target_data[i]
 
 
 if __name__ == "__main__":

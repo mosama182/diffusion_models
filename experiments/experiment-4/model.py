@@ -17,7 +17,7 @@ class FlowField(nn.Module):
         self.num_hidden = num_hidden
         self.num_freqs = num_freqs
 
-         # input_dim + 1 because of time embedding (which will just be 't' itself)
+         # input_dim + 2 * num_freqa because of time embedding
         self.net = nn.Sequential(nn.Linear(input_dim + 2 * num_freqs, num_hidden), 
                                  nn.LeakyReLU(), 
                                  nn.Linear(num_hidden, num_hidden), 

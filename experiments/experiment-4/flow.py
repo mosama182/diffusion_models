@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 
-from data import generate_annular, generate_spiral
+from data import SyntheticData
 
 # Implements a Linear point wise flow
 class LinearFlow():
@@ -39,19 +39,17 @@ if __name__ == "__main__":
     
     # samples from annular data
     num_samples = 50
-    source_data = generate_annular(num_samples, inner_radius=2, outer_radius=2.25)
-    target_data = generate_spiral(num_samples)
-
+    dataset = SyntheticData(num_samples, inner_radius=2, outer_radius=2.25)
 
     # flow
     flow = LinearFlow()
-    t = 0
-    xt = flow.runflow(target_data, source_data, t)
+    t = 1
+    xt = flow.runflow(dataset.target_data, dataset.source_data, t)
 
     # plot
     plt.figure()
-    plt.scatter(source_data[:, 0], source_data[:, 1], label=r'source samples')
-    plt.scatter(target_data[:, 0], target_data[:, 1], label=r'target samples')
+    plt.scatter(dataset.source_data[:, 0], dataset.source_data[:, 1], label=r'source samples')
+    plt.scatter(dataset.target_data[:, 0], dataset.target_data[:, 1], label=r'target samples')
     plt.scatter(xt[:, 0], xt[:, 1], label=f'Samples at $t={t}$')
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
