@@ -73,7 +73,7 @@ $$v_{t}^{[x_{o}, x_{1}]}(x_{t}) = x_{0} - x_{1} \implies x_{t} = t x_{1} + (1 - 
 
 Given the pointwise flow, 
 
-$$v_{t}(x_{t}) = \mathbb{E}_{x_{o}, x_{1} | x_{t}}\big[v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} \big]$$ 
+$$v_{t}(x_{t}) = \mathbb{E}_{x_{o}, x_{1} | x_{t}} [v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} ]$$ 
 
 $$ \argmin_{\theta} \mathbb{E}_{x_{o}, x_{1}, x_{t}}\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
 
