@@ -6,6 +6,7 @@ import os
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+import yaml
 from celluloid import Camera
 
 from model import FlowField
@@ -37,7 +38,7 @@ def sample(model, T, source_samples):
     return x1, trajectory, t_axis.numpy()
 
 
-def visualize_movement(trajectory, t_axis):
+def visualize_movement(trajectory):
     """
     trajectory: a list of numpy array from time t in t_axis
     """
@@ -68,16 +69,22 @@ if __name__ == "__main__":
     model.eval()
     model = model.to("cpu")
 
-
+    # read configuration file
+    root = os.path.dirname(__file__)
+    yaml_file = os.path.join(root, "confg.yaml")
+    with open(yaml_file, 'r') as file:
+        confg_data = yaml.safe_load(file)
+        
     # source data
-    num_samples = 500
-    dataset = SyntheticData(num_samples, inner_radius=2.5, outer_radius=3.0)
+    num_samples = confg_data['ntest']
+    dataset = SyntheticData(num_samples, inner_radius=confg_data['inner_rad'], 
+                            outer_radius=confg_data['outer_rad'])
 
     # sample using flow matching
-    T = 100
+    T = confg_data['T']
     target_data, trajectory, t_axis = sample(model, T, dataset.source_data)
 
-    visualize_movement(trajectory, t_axis)
+    visualize_movement(trajectory)
 
     """
     plt.figure()
