@@ -20,13 +20,17 @@ Below is a short description of each experiment with illustrative figures.
 
 For a known 1D-Gaussian data distribution $p_{o}(x_{o}) = \mathcal{N}(\mu_{0}, \sigma_{o}^{2})$, this experiment demonstrates that starting from samples from a base distribution $p_{1}(x_{1}) = \mathcal{N}(0, \sigma_{q}^{2})$, reverse sampling of DDPM and DDIM (Alg. (1) and (2) respectively in the tutorial) produces a histogram that resembles the original data distribution $p_{o}(x_{o})$. The conditional expectation needed for DDPM and DDIM can be obtained manually and is given by $$E[x_{t-\Delta t}|x_{t}] = \frac{1}{\sigma_{o}^{2} + \sigma_{q}^{2}t} \Big((\sigma_{o}^{2} + \sigma_{q}^{2}(t - \Delta t)) x_{t} + \sigma_{q}^{2}\Delta t \mu_{o} \Big).$$ 
 
-![experiment-0](experiments/experiment-0/figures/experiment-0-samples-ddm-ddim-toy-example.jpg)
+<div style="text-align: center;">
+    <img src="experiments/experiment-0/figures/experiment-0-samples-ddm-ddim-toy-example.jpg" alt="experiment-0" width="500" />
+</div>
 
 ## Experiment-1
 
 For a degenerate data distribtion in 2D i.e., $p_o(\mathbf{x_{o}}) = \delta(\mathbf{x_{o}} - \mathbf{a})$, this experiment plots the trajectories of DDIM samples (Alg. (2) in the tutorial) during reverse sampling when starting from samples from a base distribution  $p_{1}(x_{1}) = \mathcal{N}(\mathbf{0}, \sigma_{q}^{2}\mathbf{I})$. The trajectories move towards the single data point. Here $$E[x_{t-\Delta t}|x_{t}] = \frac{(t - \Delta t)}{t} \mathbf{x_{t}} + \frac{\Delta t}{t} \mathbf{a}.$$  
 
-![experiment-1](experiments/experiment-1/figures/experiment-1-sample-trajectories-ddim.jpg)
+<div style="text-align: center;">
+    <img src="experiments/experiment-1/figures/experiment-1-sample-trajectories-ddim.jpg" alt="experiment-1" width="400" />
+</div>
 
 ## Experiment-2
 
@@ -42,24 +46,66 @@ $$p(x_{o} = a | x_{t}) = \frac{p_{o}(x_{o} = a) p(x_{t} | x_{o} = a)}{p_{t}(x_{t
 
 by Baye's rule. The expressions for $p(x_{t} | x_{o} = a)$ and $p_{t}(x_{t})$ can be obtained easily from the forward diffusion process.
 
-
-![experiment-2](experiments/experiment-2/figures/experiment-2-sample-trajectories-ddim.jpg)
+<div style="text-align: center;">
+    <img src="experiments/experiment-2/figures/experiment-2-sample-trajectories-ddim.jpg" alt="experiment-2" width="400" />
+</div>
 
 ## Experiment-3
 
-For synthetic Swiss roll dataset, this experiment trains a fully connected NN with ReLU activations to learn $E[x_{0}| x_{t}]$ from data. Then $E[x_{t-\Delta t}| x_{t}]$ is obtained via its relationship to $E[x_{0}| x_{t}]$ (eq. (24) in the tutorial) which is then used in the reverse sampling of DDPM and DDIM. 
+Here the data distribution $p_{o}(x_{o})$ is synthetic Swiss roll data (see Figure below). The base distribution is $p_{1}(x_{1}) = \mathcal{N}(\mathbf{0}, \sigma_{q}^{2}\mathbf{I})$. We want to estimate $E[x_{t- \Delta t}| x_{t}]$ from data. A fully connected NN with ReLU activations is trained to first learn $E[x_{0}| x_{t}]$. Then $E[x_{t-\Delta t}| x_{t}]$ is obtained via its relationship to $E[x_{0}| x_{t}]$ (eq. (24) in the tutorial) which is then used in the reverse sampling of DDPM and DDIM. 
 
-![experiment-3](experiments/experiment-3/figures/eval_ddpm_samples.jpg)
+<div style="text-align: center;">
+    <img src="experiments/experiment-3/figures/data.jpg" alt="experiment-4-data" width="400" style="display: inline-block; margin-right: 10px;" />
+    <img src="experiments/experiment-3/figures/eval_ddpm_samples.jpg" alt="experiment-3" width="400" style="display: inline-block;" />
+</div>
 
+## Experiment-4
+
+This experiment is about flow matching where we learn a flow $v_{t}(x_{t})$ to transform samples from a base distribution $x_{1} \sim p_{1}(x_{1})$ to samples from data distribution $x_{o} \sim p_{o}(x_{o})$. Given $v_{t}(x_{t})$, the samples are transformed according to
+
+$$x_{t - \Delta t} = x_{t} + v_{t}(x_{t}) \Delta t$$
+
+$\text{for}~t = 1, 1 - \Delta t, \ldots, \Delta t.$
+
+To learn the flow, for every pair $(x_{o}, x_{1})$ we define a pointwise flow $v_{t}^{[x_{o}, x_{1}]}(x_{t})$ which moves point $x_{1}$ at $t=1$ to $x_{o}$ at $t=0$ and satisfies $\frac{\partial x_{t}}{\partial t} = - v_{t}^{[x_{o}, x_{1}]}(x_{t})$. One example is linear flow i.e.,
+
+$$v_{t}^{[x_{o}, x_{1}]}(x_{t}) = x_{0} - x_{1} \implies x_{t} = t x_{1} + (1 - t) x_{0}.$$
+
+Given the pointwise flow, 
+
+$$v_{t}(x_{t}) := \mathbb{E}_{x_{o}, x_{1} | x_{t}}~\big[v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} \big] = ~\argmin_{\theta} \mathbb{E}_{x_{o}, x_{1}, x_{t}}~\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
+
+That is minimize the mean square error to the pointwise flow over samples $x_{o}, x_{1}, x_{t}$. This is the objective we minimize in this experiment. 
+
+Here the base distribution $p_{1}(x_{1}): \text{Annular}$ and the data distribution $p_{1}(x_{1}): \text{Spiral}$ (see figure below). `Pseudocode 4` in the tutorial with linear pointwise flows is used to learn the flow $v_{t}(x_{t})$. A simple fully connected NN is used. Then `Pseudocode 5` in the tutorial is used to sample from the target distribution. The animation below shows the flow of data points from annular distribution
+to spiral using the learned flow. 
+
+<div style="text-align: center;">
+  <img src="experiments/experiment-4/figures/data.jpg" alt="experiment-4-data" width="500" height="350" style="display: inline-block; margin-right: 10px;" />
+  <img src="experiments/experiment-4/figures/scatter.gif" alt="experiment-4-gif" width="350" height="350" style="display: inline-block;" />
+</div>
 
 # Installation
+Create `conda` environment with `python==3.9.19`:
+```
+conda create -n <env-name> python==3.9.19
+conda activate <env-name>
+```
 
+Make sue `git lfs` is installed:
+```
+brew install git-lfs
+git lfs install
+```
+
+Clone repository:
 ```
 git clone https://github.com/mosama182/diffusion_models.git
 ```
-Create new conda environment and install requirements.
+
+Install requirements:
 
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
