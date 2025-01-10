@@ -73,7 +73,9 @@ $$v_{t}^{[x_{o}, x_{1}]}(x_{t}) = x_{0} - x_{1} \implies x_{t} = t x_{1} + (1 - 
 
 Given the pointwise flow, 
 
-$$v_{t}(x_{t}) := \mathbb{E}_{x_{o}, x_{1} | x_{t}}~\big[v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} \big] = ~\argmin_{\theta} \mathbb{E}_{x_{o}, x_{1}, x_{t}}~\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
+$$v_{t}(x_{t}) := \mathbb{E}_{x_{o}, x_{1} | x_{t}}~\big[v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} \big] 
+
+$$ \argmin_{\theta} \mathbb{E}_{x_{o}, x_{1}, x_{t}}\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
 
 That is minimize the mean square error to the pointwise flow over samples $x_{o}, x_{1}, x_{t}$. This is the objective we minimize in this experiment. 
 
