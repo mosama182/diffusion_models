@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import os
 
 from torch.utils.data import Dataset
 
@@ -65,3 +66,7 @@ if __name__ == "__main__":
     plt.legend()
 
     plt.show()
+
+    # save figure
+    #os.makedirs('figures', exist_ok=True)
+    #plt.savefig('figures/data.jpg')
