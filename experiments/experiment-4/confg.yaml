@@ -1,0 +1,14 @@
+# nos. of trainng data points 
+# annular distribution
+ntrain: 10000
+inner_rad: 2.5
+outer_rad: 3.0
+
+# training parameters
+lr: 1e-3
+epochs: 5000
+batch_size: 2048
+
+# parameters for evaluation
+T: 100
+ntest: 500
