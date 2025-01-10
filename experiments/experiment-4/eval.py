@@ -56,7 +56,7 @@ def visualize_movement(trajectory):
     anim = camera.animate(blit=True)
 
     os.makedirs('figures', exist_ok=True)
-    anim.save('figures/scatter.gif', writer='ffmpeg', fps=7)
+    anim.save('figures/scatter.mp4', writer='ffmpeg', fps=7)
 
     
 if __name__ == "__main__":
