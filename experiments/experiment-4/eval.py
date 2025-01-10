@@ -6,6 +6,7 @@ import os
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+from celluloid import Camera
 
 from model import FlowField
 from data import SyntheticData
@@ -40,20 +41,23 @@ def visualize_movement(trajectory, t_axis):
     """
     trajectory: a list of numpy array from time t in t_axis
     """
-    idx = 10
-    t = t_axis[idx]
-    x1 = trajectory[idx]
-    num_samples = x1.shape[0]
-    #color = np.random.randint(256, size=(num_samples, 3))
-    #color = color / 255
+    x1 = trajectory[0]
+    colors = np.arctan(x1[:, 1] / x1[:, 0])
+    fig, ax = plt.subplots(figsize=(6, 6))
+    camera = Camera(fig)
+    ax.set_title("Toy example - flow matching")
 
-    plt.figure()
-    plt.scatter(x1[:, 0], x1[:, 1])
-    plt.grid()
-    plt.title(f'Points at time $t={t}$')
-    plt.show()
+    for idx in range(len(trajectory)):
+        x = trajectory[idx]
+        plt.scatter(x[:, 0], x[:, 1], c=colors)
+        camera.snap()
+    
+    anim = camera.animate(blit=True)
 
+    os.makedirs('figures', exist_ok=True)
+    anim.save('figures/scatter.gif', writer='ffmpeg', fps=7)
 
+    
 if __name__ == "__main__":
 
     # load model ckpt
