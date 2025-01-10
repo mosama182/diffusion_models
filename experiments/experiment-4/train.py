@@ -9,6 +9,7 @@ import torch
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import yaml
 
 from data import SyntheticData
 from model import FlowField
@@ -49,12 +50,12 @@ def train(dataloader, flow, model, optimizer, epochs, device, model_dir):
             loss = torch.mean((vt - vt_hat)**2)
             loss.backward()
             optimizer.step()
-            losses += [loss.detach()]
 
             # accumulate loss
             epoch_loss += loss.item()
             
         epoch_loss /= len(dataloader)
+        losses += [epoch_loss]
 
         # print loss
         #if (epoch + 1) % 50 == 0:
@@ -70,32 +71,39 @@ def train(dataloader, flow, model, optimizer, epochs, device, model_dir):
         }
     
     os.makedirs(model_dir, exist_ok=True)
-    torch.save(checkpoint, os.path.join(model_dir, 'model.pth'))
+    torch.save(checkpoint, os.path.join(model_dir, 'model_2.pth'))
 
     return losses
 
 
 if __name__ == "__main__":
     
+    # read configuration file
+    root = os.path.dirname(__file__)
+    yaml_file = os.path.join(root, "confg.yaml")
+    with open(yaml_file, 'r') as file:
+        confg_data = yaml.safe_load(file)
+        
     # device
     device = "mps" if torch.cuda.is_available() else "cpu"
     
     # data
-    num_samples = 10000
-    dataset = SyntheticData(num_samples, inner_radius=2.5, outer_radius=3)
-    dataloader = DataLoader(dataset, batch_size=2048)
+    num_samples = confg_data['ntrain']
+    dataset = SyntheticData(num_samples, inner_radius=confg_data['inner_rad'], 
+                            outer_radius=confg_data['outer_rad'])
+    dataloader = DataLoader(dataset, batch_size=confg_data['batch_size'])
 
     # model
     model = FlowField()
 
     # optimizer
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=float(confg_data['lr']))
 
     # flow
     flow = LinearFlow()
 
     # train
-    num_epochs = 5000
+    num_epochs = confg_data['epochs']
     model_dir = "models"
     losses = train(dataloader, flow, model, optimizer, num_epochs, 
                     device, model_dir)
@@ -106,7 +114,11 @@ if __name__ == "__main__":
     plt.xlabel(r'epochs')
     plt.ylabel(r'MSE loss training.')
     plt.grid()
-    plt.show()
+    #plt.show()
+
+    # save figure
+    os.makedirs('figures', exist_ok=True)
+    plt.savefig('figures/train_loss.jpg')
     
 
     
