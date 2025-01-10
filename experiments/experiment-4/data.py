@@ -52,21 +52,21 @@ if __name__ == "__main__":
 
     plt.figure()
     plt.subplot(1, 2, 1)
-    plt.scatter(dataset.source_data[:, 0], dataset.source_data[:, 1], label=r'source distr.')
+    plt.scatter(dataset.source_data[:, 0], dataset.source_data[:, 1], c='blue', label=r'base dist. $p_{1}(x_{1})$')
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
     plt.grid()
     plt.legend()
     
     plt.subplot(1, 2, 2)
-    plt.scatter(dataset.target_data[:, 0], dataset.target_data[:, 1], label=r'target distr.')
+    plt.scatter(dataset.target_data[:, 0], dataset.target_data[:, 1], c='green', label=r'Data distr. $p_{o}(x_{o})$')
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
     plt.grid()
     plt.legend()
 
-    plt.show()
+    #plt.show()
 
     # save figure
-    #os.makedirs('figures', exist_ok=True)
-    #plt.savefig('figures/data.jpg')
+    os.makedirs('figures', exist_ok=True)
+    plt.savefig('figures/data.jpg')
