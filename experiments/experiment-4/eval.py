@@ -44,7 +44,7 @@ def visualize_movement(trajectory):
     """
     x1 = trajectory[0]
     colors = np.arctan(x1[:, 1] / x1[:, 0])
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(4, 4))
     camera = Camera(fig)
     ax.set_title("Toy example - flow matching")
 
@@ -56,7 +56,7 @@ def visualize_movement(trajectory):
     anim = camera.animate(blit=True)
 
     os.makedirs('figures', exist_ok=True)
-    anim.save('figures/scatter.mp4', writer='ffmpeg', fps=7)
+    anim.save('figures/scatter.gif', writer='ffmpeg', fps=7)
 
     
 if __name__ == "__main__":
