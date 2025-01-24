@@ -1,10 +1,10 @@
 # Introduction
 
-In this repository, I am attempting to understand diffusion models from scratch using [Step-by-Step Diffusion: An Elementary Tutorial](https://arxiv.org/abs/2406.08929).
+This repository contains some toy experiments to illustrate/reconstruct some of the concepts/examples in the following tutorial on diffsuion modeling [Step-by-Step Diffusion: An Elementary Tutorial](https://arxiv.org/abs/2406.08929). It can be used for learning and pedagogical purposes.  
 
 # Experiments
 
-The `experiments` folder contains subfolders corresponding to different experiements. Each experiment explores a small concept, performs a sanity check or creates a proof-of-concept setup to implement an idea (there are only four experiments right now but more will be added as I learn and explore diffusion models further).
+The `experiments` folder contains subfolders corresponding to different experiements. Each experiment explores a small concept, performs a sanity check or creates a proof-of-concept setup to implement an idea (there are only five experiments right now but more will be added as I learn and explore diffusion models further).
 
 There is a description at the top of a main script in each experiment that details what the experiment aims to do. There is also a `figures` subfolder in each experiment containing resulting figures that should be produced by running the experiment. These figures should give some idea on what the experiment is about. To run an experiment (check [setup](#installation) first):
 
@@ -18,7 +18,7 @@ Below is a short description of each experiment with illustrative figures.
 
 ## Experiment-0
 
-For a known 1D-Gaussian data distribution $p_{o}(x_{o}) = \mathcal{N}(\mu_{0}, \sigma_{o}^{2})$, this experiment demonstrates that starting from samples from a base distribution $p_{1}(x_{1}) = \mathcal{N}(0, \sigma_{q}^{2})$, reverse sampling of DDPM and DDIM (Alg. (1) and (2) respectively in the tutorial) produces a histogram that resembles the original data distribution $p_{o}(x_{o})$. The conditional expectation needed for DDPM and DDIM can be obtained manually and is given by $$E[x_{t-\Delta t}|x_{t}] = \frac{1}{\sigma_{o}^{2} + \sigma_{q}^{2}t} \Big((\sigma_{o}^{2} + \sigma_{q}^{2}(t - \Delta t)) x_{t} + \sigma_{q}^{2}\Delta t \mu_{o} \Big).$$ 
+For a known 1D-Gaussian data distribution $p_{o}(x_{o}) = \mathcal{N}(\mu_{0}, \sigma_{o}^{2})$, this experiment demonstrates that starting from samples from a base distribution $p_{1}(x_{1}) = \mathcal{N}(0, \sigma_{q}^{2})$, and applying reverse sampling of DDPM and DDIM (Alg. (1) and (2) respectively in the tutorial) produces a histogram that resembles the original data distribution $p_{o}(x_{o})$. The conditional expectation needed for DDPM and DDIM can be obtained manually and is given by $$E[x_{t-\Delta t}|x_{t}] = \frac{1}{\sigma_{o}^{2} + \sigma_{q}^{2}t} \Big((\sigma_{o}^{2} + \sigma_{q}^{2}(t - \Delta t)) x_{t} + \sigma_{q}^{2}\Delta t \mu_{o} \Big).$$ 
 
 <div style="text-align: center;">
     <img src="experiments/experiment-0/figures/experiment-0-samples-ddm-ddim-toy-example.jpg" alt="experiment-0" width="500" />
@@ -71,11 +71,15 @@ To learn the flow, for every pair $(x_{o}, x_{1})$ we define a pointwise flow $v
 
 $$v_{t}^{[x_{o}, x_{1}]}(x_{t}) = x_{0} - x_{1} \implies x_{t} = t x_{1} + (1 - t) x_{0}.$$
 
-Given the pointwise flow, 
+Given the pointwise flow, the marginal flow is
 
-$$v_{t}(x_{t}) = E_{x_{o}, x_{1} | x_{t}} [v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} ] = \argmin_{\theta} E_{x_{o}, x_{1}, x_{t}}\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
+$$v_{t}(x_{t}) = E_{x_{o}, x_{1} | x_{t}} [v_{t}^{[x_{o}, x_{1}]}(x_{t})| x_{t} ],$$
 
-That is minimize the mean square error to the pointwise flow over samples $x_{o}, x_{1}, x_{t}$. This is the objective we minimize in this experiment. 
+which can be learned by solving
+
+$$\argmin_{\theta} E_{x_{o}, x_{1}, x_{t}}\Big[\big(f_{\theta}(x_{t}, t) - v_{t}^{[x_{o}, x_{1}]}(x_{t})\big)^{2}\Big].$$
+
+That is minimize the mean square error to the pointwise flow over samples $x_{o}, x_{1}, x_{t}$.
 
 Here the base distribution $p_{1}(x_{1}): \text{Annular}$ and the data distribution $p_{1}(x_{1}): \text{Spiral}$ (see figure below). `Pseudocode 4` in the tutorial with linear pointwise flows is used to learn the flow $v_{t}(x_{t})$. A simple fully connected NN is used. Then `Pseudocode 5` in the tutorial is used to sample from the target distribution. The animation below shows the flow of data points from annular distribution
 to spiral using the learned flow. 
@@ -94,7 +98,8 @@ conda activate <env-name>
 
 Make sure `git lfs` is installed:
 ```
-brew install git-lfs
+brew install git-lfs (for macOS)
+pip install git-lfs (for Linux)
 git lfs install
 ```
 
