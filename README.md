@@ -92,7 +92,7 @@ conda create -n <env-name> python==3.9.19
 conda activate <env-name>
 ```
 
-Make sue `git lfs` is installed:
+Make sure `git lfs` is installed:
 ```
 brew install git-lfs
 git lfs install
