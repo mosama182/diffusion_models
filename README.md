@@ -4,7 +4,7 @@ This repository contains some toy experiments to illustrate/reconstruct some of 
 
 # Experiments
 
-The `experiments` folder contains subfolders corresponding to different experiements. Each experiment explores a small concept, performs a sanity check or creates a proof-of-concept setup to implement an idea (there are only five experiments right now but more will be added as I learn and explore diffusion models further).
+The `experiments` folder contains subfolders corresponding to different experiements. Each experiment explores a small concept, performs a sanity check or creates a proof-of-concept setup to implement an idea.
 
 There is a description at the top of a main script in each experiment that details what the experiment aims to do. There is also a `figures` subfolder in each experiment containing resulting figures that should be produced by running the experiment. These figures should give some idea on what the experiment is about. To run an experiment (check [setup](#installation) first):
 
